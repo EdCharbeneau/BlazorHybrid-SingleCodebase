@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.WebView.Maui;
+using Microsoft.Extensions.Configuration;
 using MyBlazor.Hybrid.Services;
 using MyBlazor.Shared;
+using System.Reflection;
 
 namespace MyBlazor.Hybrid
 {
@@ -20,22 +22,24 @@ namespace MyBlazor.Hybrid
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
+            var a = Assembly.GetExecutingAssembly();
 
+#if DEBUG
+            var configResourceName = "MyBlazor.Hybrid.appsettings.Development.json";
+#else
+            var configResourceName = "MyBlazor.Hybrid.appsettings.json";
+#endif
+
+            using var stream = a.GetManifestResourceStream("MyBlazor.Hybrid.appsettings.json");
+
+            builder.Configuration.AddJsonStream(stream);
 
             // removed this registration
             // builder.Services.AddSingleton<IFetchDataService>();
 
             // BaseAddress should match the url and port of the server application
             // Configuration files can be used to control the BaseAddress value instead of hard coding the value
-#if DEBUG
-#if ANDROID || IOS
-            builder.Services.AddDevHttpClient(7030);
-#else
-                builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7030/") });
-#endif
-#else
-    builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7030/") });
-#endif
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["WebApiBaseAddress"]) });
             builder.Services.AddScoped<IFetchDataService, FetchDataService>();
 
             return builder.Build();
