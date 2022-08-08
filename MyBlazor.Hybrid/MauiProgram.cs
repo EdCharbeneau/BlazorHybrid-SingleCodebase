@@ -20,13 +20,9 @@ namespace MyBlazor.Hybrid
             builder.Services.AddBlazorWebViewDeveloperTools();
             // If using localhost
             builder.Services.AddDevHttpClient(7030);
-            // If using a published development API instead of localhost
-            //builder.Configuration.AddJsonResource("MyBlazor.Hybrid.Development.appsettings.json");
-            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["WebApiBaseAddress"]) });
-
 #else 
-            builder.Configuration.AddJsonResource("MyBlazor.Hybrid.appsettings.json");
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["WebApiBaseAddress"]) });
+            // If using a published development API instead of localhost
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("Production API") });
 #endif
             builder.Services.AddScoped<IFetchDataService, FetchDataService>();
 
