@@ -6,12 +6,13 @@ namespace MyBlazor.Hybrid.Services
     {
         public DevHttpsConnectionHelper(int sslPort)
         {
-            SslPort = sslPort;
-            DevServerRootUrl = FormattableString.Invariant($"https://{DevServerName}:{SslPort}");
+            DevServerRootUrl = new UriBuilder("https", DevServerName, sslPort).Uri.ToString();
+#if WINDOWS
+            LazyHttpClient = new Lazy<HttpClient>(() => new HttpClient());
+#else 
             LazyHttpClient = new Lazy<HttpClient>(() => new HttpClient(GetPlatformMessageHandler()));
+#endif
         }
-
-        public int SslPort { get; }
 
         public string DevServerName =>
 #if WINDOWS
@@ -29,9 +30,7 @@ namespace MyBlazor.Hybrid.Services
 
         public HttpMessageHandler GetPlatformMessageHandler()
         {
-#if WINDOWS
-            return null;
-#elif ANDROID
+#if ANDROID
             var handler = new CustomAndroidMessageHandler();
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
             {
@@ -67,8 +66,13 @@ namespace MyBlazor.Hybrid.Services
 
     public static class DevHttpsConnectionHelperExtensions
     {
+        /// <summary>
+        /// Configures HttpClient to use localhost or 10.0.2.2 and bypass certificate checking on Android.
+        /// </summary>
+        /// <param name="sslPort">Development server port</param>
+        /// <returns>The IServiceCollection</returns>
         public static IServiceCollection AddDevHttpClient(this IServiceCollection services, int sslPort)
-{
+        {
             var devSslHelper = new DevHttpsConnectionHelper(sslPort);
             var http = devSslHelper.HttpClient;
             http.BaseAddress = new Uri(devSslHelper.DevServerRootUrl);
