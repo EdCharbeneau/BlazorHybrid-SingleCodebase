@@ -1,0 +1,61 @@
+﻿@inherits TestContext
+@code
+{
+    IFetchDataService _mockFetchDataService;
+
+    public FetchData_Tests()
+    {
+        _mockFetchDataService = Mock.Create<IFetchDataService>();
+        Services.AddSingleton(_mockFetchDataService);
+    }
+
+    [Fact]
+    public void FetchData_HeadingIsRendered()
+    {
+        // Act
+        var cut = Render(@<FetchData />);
+    
+        // Assert
+        var h1 = cut.Find("h1");
+    
+        h1.MarkupMatches(@<h1>Weather forecast</h1>);
+    }
+
+    [Theory, AutoData]
+    public void FetchData_TableIsRendered(WeatherForecast[]? forecasts)
+    {
+
+        //Arrange
+        Mock.Arrange(() => _mockFetchDataService.GetWeatherForecastsAsync())
+        .Returns(Task.FromResult(forecasts));
+
+        // Act
+        var cut = Render(@<FetchData />);
+
+        // Assert
+        var table = cut.Find("table");
+
+        table.MarkupMatches(
+    @<table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+                {
+                    <tr>
+                        <td>@forecast.Date.ToShortDateString()</td>
+                                <td>@forecast.TemperatureC</td>
+                                <td>@forecast.TemperatureF</td>
+                                <td>@forecast.Summary</td>
+                            </tr>
+                }
+                </tbody>
+        </table>);
+    }
+}
