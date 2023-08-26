@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <SupportedPlatform Include="browser" />
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" VersionOverride="7.0.0" />
+	  <SupportedPlatform Include="browser" />
   </ItemGroup>
 </Project>
