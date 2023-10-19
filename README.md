@@ -1,6 +1,6 @@
 # Blazor Hybrid and Web in One Solution
 
-> Below is an excerpt from an upcoming whitepaper I'm writing on the subject
+> Below is an excerpt from the **FREE** whitepaper [Blazor Hybrid and Web in One Solution](https://www.telerik.com/campaigns/blazor/ebook-blazor-hybrid).
 
 **Shared Business Logic**
 
