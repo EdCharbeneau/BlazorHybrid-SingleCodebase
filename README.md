@@ -2,6 +2,8 @@
 
 > Below is an excerpt from the **FREE** whitepaper [Blazor Hybrid and Web in One Solution](https://www.telerik.com/campaigns/blazor/ebook-blazor-hybrid).
 
+> An updated version using .NET 8 RC 2 can be found at: [https://github.com/EdCharbeneau/UltimateBlazorApp](https://github.com/EdCharbeneau/UltimateBlazorApp). This version is a bit more simplified than the current repo.
+
 **Shared Business Logic**
 
 This library will contain non-UI code that is common to more than one project in the solution. Classes, interfaces, models, and services are common items to share between projects. With Blazor this is even more practical because the UI is built using C# and .NET instead of JavaScript, therefore we can share a lot more code across the solution.
